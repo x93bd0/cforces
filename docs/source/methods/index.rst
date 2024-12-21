@@ -4,11 +4,7 @@ Methods
 This module wraps the Codeforces API, providing the client with methods to
 access information from it.
 
-It is divided in 5 submodules that handle specific parts of the API:
-
-.. automodule:: cforces.methods
-   :members:
-   :show-inheritance:
+It is divided in 5 submodules that handle specific parts of the API.
 
 .. toctree::
     :hidden:

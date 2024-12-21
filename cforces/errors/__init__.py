@@ -1,3 +1,34 @@
-from .api import Error, Unauthorized
+from .base import CodeforcesException
+from .api import (
+    GenericAPIError,
+    APIRequestLimitExceeded,
+    BlogEntryNotFound,
+    ContestHasNotStarted,
+    InvalidParameter,
+    InvalidParticipantType,
+    NotAContestManager,
+    OneIndexed,
+    ProblemSetNotFound,
+    RequiredFieldMissing,
+    UserNotFound,
+    UserUnauthorized,
+    api_error,
+)
 
-__all__ = ["Error", "Unauthorized"]
+
+__all__ = [
+    "CodeforcesException",
+    "GenericAPIError",
+    "APIRequestLimitExceeded",
+    "BlogEntryNotFound",
+    "ContestHasNotStarted",
+    "InvalidParameter",
+    "InvalidParticipantType",
+    "NotAContestManager",
+    "OneIndexed",
+    "ProblemSetNotFound",
+    "RequiredFieldMissing",
+    "UserNotFound",
+    "UserUnauthorized",
+    "api_error",
+]

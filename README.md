@@ -77,8 +77,10 @@ if __name__ == "__main__":
 
 - [ ] Finish the documentation.
 - [ ] Implement helper methods for making the interaction easier.
-- [ ] Find every possible error and implement it.
+- [ ] Find every possible error and implement it. (partial impl)
 - [ ] Add tests.
+- [ ] Fix bug: When a ';' is returned in the error comments, it is treated as a whole new error.
+- [ ] Better cc2sc
 
 ## License
 

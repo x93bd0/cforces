@@ -70,7 +70,7 @@ class Contest:
         handles: List[str] | str | None = None,
         room: int | None = None,
         show_unofficial: bool = False,
-        participant_types: List[enums.ParticipantType] | None = None,
+        participant_types: List[enums.ParticipantType | str] | None = None,
     ) -> types.Standings:
         """Retrieves standings of a specific contest.
 
@@ -105,7 +105,7 @@ class Contest:
                 raw_handles = handles
 
             else:
-                raw_handles = ';'.join(handles)
+                raw_handles = ";".join(handles)
 
         return types.Standings.from_dict(
             await self.api_call(
@@ -118,7 +118,20 @@ class Contest:
                     "handles": raw_handles,
                     "room": room,
                     "showUnofficial": show_unofficial,
-                    "participantTypes": [pt.value for pt in participant_types],
+                    "participantTypes": (
+                        ",".join(
+                            [
+                                (
+                                    pt.value
+                                    if isinstance(pt, enums.ParticipantType)
+                                    else pt
+                                )
+                                for pt in participant_types
+                            ]
+                        )
+                        if participant_types
+                        else None
+                    ),
                 },
             )
         )

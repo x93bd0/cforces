@@ -1,8 +1,9 @@
+import enum
 from idlelib.iomenu import errors
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 from aiohttp import ClientSession
-from urllib.parse import urljoin, quote_plus
+from urllib.parse import urljoin
 
 from .methods import Methods
 from .utils import cc2sc
@@ -58,6 +59,11 @@ class Client(Methods):
         for k, v in sorted(params.items()):
             if not v:
                 continue
+            if isinstance(v, bool):
+                v = int(v)
+            elif isinstance(v, enum.Enum):
+                v = v.value
+
             raw_params += ("&" if raw_params else "") + k + "=" + str(v)
 
         if self.authorized:
@@ -80,9 +86,8 @@ class Client(Methods):
         async with self.session.get(url) as resp:
             raw_data: Dict[str, Any] = await resp.json()
             if raw_data["status"] == "FAILED":
-                # TODO: Identify errors
-                raise errors.Error(raw_data["comment"])
+                raise errors.api_error(raw_data["comment"])
 
-        if isinstance(raw_data["result"], dict):
+        if isinstance(raw_data["result"], dict | list):
             return cc2sc(raw_data["result"])
         return raw_data["result"]

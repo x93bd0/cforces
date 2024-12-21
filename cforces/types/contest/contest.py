@@ -63,6 +63,6 @@ class Contest(Object):
 
     @staticmethod
     def from_dict(raw_data: Dict[str, Any]) -> "Contest":
-        raw_data["contest_type"] = ContestType(raw_data["contest_type"])
-        raw_data["contest_phase"] = ContestPhase(raw_data["contest_phase"])
+        raw_data["type"] = ContestType(raw_data["type"])
+        raw_data["phase"] = ContestPhase(raw_data["phase"])
         return Contest(**raw_data)

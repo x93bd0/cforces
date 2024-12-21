@@ -19,6 +19,10 @@ class Verdict(Enum):
     #: Undocumented (TODO)
     TIME_LIMIT_EXCEEDED: str = "TIME_LIMIT_EXCEEDED"
     #: Undocumented (TODO)
+    MEMORY_LIMIT_EXCEEDED: str = "MEMORY_LIMIT_EXCEEDED"
+    #: Undocumented (TODO)
+    IDLENESS_LIMIT_EXCEEDED: str = "IDLENESS_LIMIT_EXCEEDED"
+    #: Undocumented (TODO)
     SECURITY_VIOLATED: str = "SECURITY_VIOLATED"
     #: Undocumented (TODO)
     CRASHED: str = "CRASHED"
