@@ -146,23 +146,6 @@ def _contest_id_exc(param: str, about: str) -> GenericAPIError | None:
         return ContestHasNotStarted(param, int(about[:-16].rsplit(" ", 1)[1]))
 
 
-def _count_exc(param: str, about: str) -> GenericAPIError | None:
-    data: List[str] = about.rsplit(" ", 1)
-    if len(data) != 2:
-        return None
-
-    if data[0].rsplit(" ", 2)[1:] == ["more", "than"]:
-        return APIRequestLimitExceeded(param, int(data[1]))
-
-    if about == "Field should be at least 1":
-        return OneIndexed(param, about)
-
-
-def _from_exc(param: str, about: str) -> GenericAPIError | None:
-    if about == "Field should be at least 1":
-        return OneIndexed(param, about)
-
-
 def _handle_exc(param: str, about: str) -> GenericAPIError | None:
     if about.endswith(" not found"):
         return UserNotFound(param, about[:-10].rsplit(" ", 1)[1])
@@ -171,19 +154,6 @@ def _handle_exc(param: str, about: str) -> GenericAPIError | None:
 def _handles_exc(param: str, about: str) -> GenericAPIError | None:
     if about.endswith(" not found"):
         return UserNotFound(param, about[:-10].rsplit(" ", 1)[1])
-
-    if about == "Field should not be empty":
-        return RequiredFieldMissing(param)
-
-
-def _max_count_exc(param: str, about: str) -> GenericAPIError | None:
-    "Field should be no more than 1000"
-    data: List[str] = about.rsplit(" ", 1)
-    if len(data) != 2:
-        return None
-
-    if data[0].rsplit(" ", 2)[1:] == ["more", "than"]:
-        return APIRequestLimitExceeded(param, int(data[1]))
 
 
 def _only_online_exc(param: str, about: str) -> GenericAPIError | None:
@@ -204,11 +174,8 @@ error_handlers: Dict[str, Callable[[str, str], GenericAPIError | None]] = {
     "asManager": _as_manager_exc,
     "blogEntryId": _blog_entry_exc,
     "contestId": _contest_id_exc,
-    "count": _count_exc,
-    "from": _from_exc,
     "handle": _handle_exc,
     "handles": _handles_exc,
-    "maxCount": _max_count_exc,
     "onlyOnline": _only_online_exc,
     "participantTypes": _participant_type_exc,
     "problemsetName": _problemset_name_exc,
@@ -225,8 +192,26 @@ def api_error(comments: str) -> ExceptionGroup[GenericAPIError]:
         about: str
 
         param, about = comment.split(": ", 1)
-        if about.startswith("Field should contain"):
-            exceptions.append(InvalidParameter(param, about[21:]))
+        words: List[str] = about.split(" ")
+
+        if words[0] == "Field":
+            if words[2] == "contain":
+                exceptions.append(InvalidParameter(param, " ".join(words[3:-1])))
+                continue
+
+            if words[4] == "least":
+                exceptions.append(OneIndexed(param, about))
+                continue
+
+            if words[4] == "more":
+                exceptions.append(APIRequestLimitExceeded(param, int(words[-1])))
+                continue
+
+            if words[4] == "empty":
+                exceptions.append(RequiredFieldMissing(param))
+                continue
+
+            exceptions.append(GenericAPIError(param, about))
 
         elif param in error_handlers:
             exc: GenericAPIError | None = error_handlers[param](param, about)
