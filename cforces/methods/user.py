@@ -32,7 +32,7 @@ class User:
         :return: A list of handles.
         """
         if not self.authorized:
-            raise errors.Unauthorized
+            raise errors.UserUnauthorized
 
         return await self.api_call(
             "user.friends",
