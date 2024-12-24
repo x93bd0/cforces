@@ -24,11 +24,12 @@ jobs:
         run: python3 tests/fetch_testdata.py
 
       - name: Upload testdata artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: testdata-artifact
           path: tests/testdata
           retention-days: 1
+          overwrite: true
 
   build:
     name: Run Python Tests
@@ -51,7 +52,7 @@ jobs:
           pip install .
 
       - name: Retrieve testdata artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: testdata-artifact
           path: tests/testdata
