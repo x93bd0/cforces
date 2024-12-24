@@ -3,7 +3,35 @@ name: Python tests
 on: [push]
 
 jobs:
+  fetch_testdata:
+    name: Fetch Testdata
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install .
+
+      - name: Fetch testdata
+        run: python3 tests/fetch_testdata.py
+
+      - name: Upload testdata artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: testdata-artifact
+          path: tests/testdata
+          retention-days: 1
+
   build:
+    name: Run Python Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,8 +50,11 @@ jobs:
           pip install -r requirements.txt
           pip install .
 
-      - name: Fetch testdata
-        run: python3 tests/fetch_testdata.py
+      - name: Retrieve testdata artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: testdata-artifact
+          path: tests/testdata
 
       - name: Test with pytest
         run: |
