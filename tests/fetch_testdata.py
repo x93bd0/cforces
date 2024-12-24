@@ -1,7 +1,7 @@
+from typing import List, Any, Dict
 import asyncio
 import json
 import os
-from typing import List, Any, Dict
 
 import aiohttp
 
@@ -167,6 +167,7 @@ async def main(count: int):
             fetch_rating_changes,
         ]:
             await call(client, count)
+            await asyncio.sleep(1)
 
 
 if __name__ == "__main__":
