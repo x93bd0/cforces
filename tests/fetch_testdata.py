@@ -151,9 +151,9 @@ async def fetch_blog_entries(client: Client, count: int) -> None:
 
 
 async def main(count: int):
+    os.makedirs(os.path.join(os.path.dirname(__file__), "testdata"), exist_ok=True)
     async with aiohttp.ClientSession() as session:
         client: Client = Client(session)
-        tasks: List[asyncio.Future] = []
 
         for call in [
             fetch_submissions,
