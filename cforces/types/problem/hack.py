@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from . import Problem
 from ..object import Object
@@ -21,18 +21,18 @@ class Hack(Object):
     )
 
     id: int
-    contest_id: int
+    creation_time_seconds: int
     hacker: Party
     defender: Party
     verdict: Verdict
     problem: Problem
-    test: str | None
-    judge_protocol: Dict[str, Any] | None  # TODO: Create a type for this
+    test: Optional[str]
+    judge_protocol: Optional[Dict[str, Any]]  # TODO: Create a type for this
 
     @staticmethod
     def from_dict(raw_data: Dict[str, Any]) -> "Hack":
         raw_data["hacker"] = Party.from_dict(raw_data["hacker"])
         raw_data["defender"] = Party.from_dict(raw_data["defender"])
         raw_data["verdict"] = Verdict(raw_data["verdict"])
-        raw_data["problem"] = Problem(raw_data["problem"])
+        raw_data["problem"] = Problem.from_dict(raw_data["problem"])
         return Hack(**raw_data)

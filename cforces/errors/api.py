@@ -1,14 +1,19 @@
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Optional
+import sys
+
 from .base import CodeforcesException
+
+if sys.version_info[0] == 3 and sys.version_info[1] < 11:
+    from exceptiongroup import ExceptionGroup
 
 
 class GenericAPIError(CodeforcesException):
     __slots__ = ("param", "comment")
     param: str
-    comment: str | None
+    comment: Optional[str]
 
     def __init__(
-        self, param: str, comment: str | None, exc_text: str | None = None
+        self, param: str, comment: Optional[str], exc_text: Optional[str] = None
     ) -> None:
         if not exc_text:
             exc_text = (
@@ -25,7 +30,7 @@ class GenericAPIError(CodeforcesException):
 
 
 class APIRequestLimitExceeded(GenericAPIError):
-    __slots__ = "maximum"
+    __slots__ = ("maximum",)
     maximum: int
 
     def __init__(self, param: str, maximum: int) -> None:
@@ -43,7 +48,7 @@ class APIRequestLimitExceeded(GenericAPIError):
 
 
 class BlogEntryNotFound(GenericAPIError):
-    __slots__ = "id"
+    __slots__ = ("id",)
     id: int
 
     def __init__(self, param: str, entry_id: int):
@@ -55,7 +60,7 @@ class BlogEntryNotFound(GenericAPIError):
 
 
 class ContestHasNotStarted(GenericAPIError):
-    __slots__ = "id"
+    __slots__ = ("id",)
 
     def __init__(self, param: str, contest_id: int) -> None:
         super().__init__(
@@ -63,6 +68,11 @@ class ContestHasNotStarted(GenericAPIError):
         )
 
         self.id = contest_id
+
+
+class InvalidCredentials(GenericAPIError):
+    def __init__(self, param: str) -> None:
+        super().__init__(param, None, "Invalid credentials!")
 
 
 class InvalidParameter(GenericAPIError):
@@ -79,7 +89,7 @@ class InvalidParameter(GenericAPIError):
 
 
 class InvalidParticipantType(GenericAPIError):
-    __slots__ = "type"
+    __slots__ = ("type",)
     type: str
 
     def __init__(self, param: str, participant_type: str) -> None:
@@ -100,7 +110,7 @@ class OneIndexed(GenericAPIError):
 
 
 class ProblemSetNotFound(GenericAPIError):
-    __slots__ = "name"
+    __slots__ = ("name",)
     name: str
 
     def __init__(self, param: str, problemset_name: str) -> None:
@@ -119,7 +129,7 @@ class RequiredFieldMissing(GenericAPIError):
 
 
 class UserNotFound(GenericAPIError):
-    __slots__ = "user"
+    __slots__ = ("user",)
     user: str
 
     def __init__(self, param: str, user: str) -> None:
@@ -132,45 +142,60 @@ class UserUnauthorized(GenericAPIError):
         super().__init__(param, None, "User unauthorized!")
 
 
-def _as_manager_exc(param: str, about: str) -> GenericAPIError:
+def _api_key_exc(param: str, about: str) -> Optional[GenericAPIError]:
+    if about == "Incorrect API key":
+        return InvalidCredentials(param)
+    return None
+
+
+def _as_manager_exc(param: str, _: str) -> GenericAPIError:
     return NotAContestManager(param)
 
 
-def _blog_entry_exc(param: str, about: str) -> GenericAPIError | None:
+def _blog_entry_exc(param: str, about: str) -> Optional[GenericAPIError]:
     if about.endswith("not found"):
         return BlogEntryNotFound(param, int(about[:-10].rsplit(" ", 1)[1]))
+    return None
 
 
-def _contest_id_exc(param: str, about: str) -> GenericAPIError | None:
+def _contest_id_exc(param: str, about: str) -> Optional[GenericAPIError]:
     if about.endswith("has not started"):
         return ContestHasNotStarted(param, int(about[:-16].rsplit(" ", 1)[1]))
+    if about.startswith("Rating changes are unavailable"):
+        return ContestHasNotStarted(param, -1)
+    return None
 
 
-def _handle_exc(param: str, about: str) -> GenericAPIError | None:
+def _handle_exc(param: str, about: str) -> Optional[GenericAPIError]:
     if about.endswith(" not found"):
         return UserNotFound(param, about[:-10].rsplit(" ", 1)[1])
+    return None
 
 
-def _handles_exc(param: str, about: str) -> GenericAPIError | None:
+def _handles_exc(param: str, about: str) -> Optional[GenericAPIError]:
     if about.endswith(" not found"):
         return UserNotFound(param, about[:-10].rsplit(" ", 1)[1])
+    return None
 
 
-def _only_online_exc(param: str, about: str) -> GenericAPIError | None:
+def _only_online_exc(param: str, _: str) -> Optional[GenericAPIError]:
     return UserUnauthorized(param)
 
 
-def _participant_type_exc(param: str, about: str) -> GenericAPIError | None:
+def _participant_type_exc(param: str, about: str) -> Optional[GenericAPIError]:
     if about.startswith("Unknown"):
         return InvalidParticipantType(param, about.rsplit(" ", 1)[1][1:-1])
+    return None
 
 
-def _problemset_name_exc(param: str, about: str) -> GenericAPIError | None:
+def _problemset_name_exc(param: str, about: str) -> Optional[GenericAPIError]:
     if about.endswith(" not found"):
         return ProblemSetNotFound(param, about[:-10].rsplit(" ", 1)[1][1:-1])
+    return None
 
 
-error_handlers: Dict[str, Callable[[str, str], GenericAPIError | None]] = {
+error_handlers: Dict[str, Callable[[str, str], Optional[GenericAPIError]]] = {
+    "apiKey": _api_key_exc,
     "asManager": _as_manager_exc,
     "blogEntryId": _blog_entry_exc,
     "contestId": _contest_id_exc,
@@ -214,27 +239,10 @@ def api_error(comments: str) -> ExceptionGroup[GenericAPIError]:
             exceptions.append(GenericAPIError(param, about))
 
         elif param in error_handlers:
-            exc: GenericAPIError | None = error_handlers[param](param, about)
+            exc: Optional[GenericAPIError] = error_handlers[param](param, about)
             exceptions.append(exc or GenericAPIError(param, about))
 
         else:
             exceptions.append(GenericAPIError(param, about))
 
     return ExceptionGroup("An API error was raised", exceptions)
-
-
-__all__ = [
-    "GenericAPIError",
-    "APIRequestLimitExceeded",
-    "BlogEntryNotFound",
-    "ContestHasNotStarted",
-    "InvalidParameter",
-    "InvalidParticipantType",
-    "NotAContestManager",
-    "OneIndexed",
-    "ProblemSetNotFound",
-    "RequiredFieldMissing",
-    "UserNotFound",
-    "UserUnauthorized",
-    "api_error",
-]

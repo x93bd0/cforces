@@ -1,9 +1,13 @@
 from typing import List, Type, Dict, Any, Tuple
 from cforces import errors
 import pytest
+import sys
+
+if sys.version_info[0] == 3 and sys.version_info[1] < 11:
+    from exceptiongroup import ExceptionGroup
 
 
-TestData: Type = Tuple[str, str, Type[errors.APIRequestLimitExceeded], Dict[str, Any]]
+TestData = Tuple[str, str, Type[errors.APIRequestLimitExceeded], Dict[str, Any]]
 testdata_entries: List[TestData] = [
     (
         "count",

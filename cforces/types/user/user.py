@@ -1,7 +1,7 @@
-from typing import Dict
+from datetime import datetime
+from typing import Dict, Optional, Union
 
 from ..object import Object
-from datetime import datetime
 
 
 class User(Object):
@@ -30,14 +30,14 @@ class User(Object):
     )
 
     handle: str
-    email: str | None
-    vk_id: str | None
-    open_id: str | None
-    first_name: str | None
-    last_name: str | None
-    country: str | None
-    city: str | None
-    organization: str | None
+    email: Optional[str]
+    vk_id: Optional[str]
+    open_id: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    country: Optional[str]
+    city: Optional[str]
+    organization: Optional[str]
     contribution: int
     rank: str
     rating: int
@@ -58,5 +58,5 @@ class User(Object):
         return datetime.fromtimestamp(self.registration_time_seconds)
 
     @staticmethod
-    def from_dict(raw_data: Dict[str, int | str]) -> "User":
+    def from_dict(raw_data: Dict[str, Union[int, str]]) -> "User":
         return User(**raw_data)

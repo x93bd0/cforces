@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from ..object import Object
 
@@ -22,7 +22,7 @@ class Comment(Object):
     commentator_handle: str
     locale: str
     text: str
-    parent_comment_id: int | None
+    parent_comment_id: Optional[int]
     rating: int
 
     @property

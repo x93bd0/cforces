@@ -3,36 +3,50 @@ from enum import Enum
 
 class Verdict(Enum):
     #: Undocumented (TODO)
-    FAILED: str = "FAILED"
+    FAILED = "FAILED"
     #: Undocumented (TODO)
-    OK: str = "OK"
+    OK = "OK"
     #: Undocumented (TODO)
-    PARTIAL: str = "PARTIAL"
+    PARTIAL = "PARTIAL"
     #: Undocumented (TODO)
-    COMPILATION_ERROR: str = "COMPILATION_ERROR"
+    COMPILATION_ERROR = "COMPILATION_ERROR"
     #: Undocumented (TODO)
-    RUNTIME_ERROR: str = "RUNTIME_ERROR"
+    RUNTIME_ERROR = "RUNTIME_ERROR"
     #: Undocumented (TODO)
-    WRONG_ANSWER: str = "WRONG_ANSWER"
+    WRONG_ANSWER = "WRONG_ANSWER"
     #: Undocumented (TODO)
-    PRESENTATION_ERROR: str = "PRESENTATION_ERROR"
+    PRESENTATION_ERROR = "PRESENTATION_ERROR"
     #: Undocumented (TODO)
-    TIME_LIMIT_EXCEEDED: str = "TIME_LIMIT_EXCEEDED"
+    TIME_LIMIT_EXCEEDED = "TIME_LIMIT_EXCEEDED"
     #: Undocumented (TODO)
-    MEMORY_LIMIT_EXCEEDED: str = "MEMORY_LIMIT_EXCEEDED"
+    MEMORY_LIMIT_EXCEEDED = "MEMORY_LIMIT_EXCEEDED"
     #: Undocumented (TODO)
-    IDLENESS_LIMIT_EXCEEDED: str = "IDLENESS_LIMIT_EXCEEDED"
+    IDLENESS_LIMIT_EXCEEDED = "IDLENESS_LIMIT_EXCEEDED"
     #: Undocumented (TODO)
-    SECURITY_VIOLATED: str = "SECURITY_VIOLATED"
+    SECURITY_VIOLATED = "SECURITY_VIOLATED"
     #: Undocumented (TODO)
-    CRASHED: str = "CRASHED"
+    CRASHED = "CRASHED"
     #: Undocumented (TODO)
-    INPUT_PREPARATION_CRASHED: str = "INPUT_PREPARATION_CRASHED"
+    INPUT_PREPARATION_CRASHED = "INPUT_PREPARATION_CRASHED"
     #: Undocumented (TODO)
-    CHALLENGED: str = "CHALLENGED"
+    CHALLENGED = "CHALLENGED"
     #: Undocumented (TODO)
-    SKIPPED: str = "SKIPPED"
+    SKIPPED = "SKIPPED"
     #: Undocumented (TODO)
-    TESTING: str = "TESTING"
+    TESTING = "TESTING"
     #: Undocumented (TODO)
-    REJECTED: str = "REJECTED"
+    REJECTED = "REJECTED"
+    #: Undocumented (TODO)
+    HACK_SUCCESSFUL = "HACK_SUCCESSFUL"
+    #: Undocumented (TODO)
+    HACK_UNSUCCESSFUL = "HACK_UNSUCCESSFUL"
+    #: Undocumented (TODO)
+    INVALID_INPUT = "INVALID_INPUT"
+    #: Undocumented (TODO)
+    GENERATOR_INCOMPILABLE = "GENERATOR_INCOMPILABLE"
+    #: Undocumented (TODO)
+    GENERATOR_CRASHED = "GENERATOR_CRASHED"
+    #: Undocumented (TODO)
+    IGNORED = "IGNORED"
+    #: Undocumented (TODO)
+    OTHER = "OTHER"

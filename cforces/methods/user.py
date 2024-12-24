@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Optional, Union
 
 import cforces
 from cforces import types, utils, errors
@@ -41,8 +41,8 @@ class User:
 
     async def user_info(
         self: "cforces.Client",
-        handles: List[str] | str,
-        check_historic_handles: bool | None = None,
+        handles: Union[List[str], str],
+        check_historic_handles: Optional[bool] = None,
     ) -> List[types.User]:
         """Retrieves the user information bounded to a list of handles.
 
@@ -58,12 +58,15 @@ class User:
             raw_handles = handles
 
         else:
-            raw_handles = ';'.join(handles)
+            raw_handles = ";".join(handles)
 
         return utils.parse_type_list(
             await self.api_call(
                 "user.info",
-                {"handles": raw_handles, "checkHistoricHandles": check_historic_handles},
+                {
+                    "handles": raw_handles,
+                    "checkHistoricHandles": check_historic_handles,
+                },
             ),
             types.User,
         )
@@ -72,7 +75,7 @@ class User:
         self: "cforces.Client",
         active_only: bool = False,
         include_retired: bool = False,
-        contest_id: int | None = None,
+        contest_id: Optional[int] = None,
     ) -> List[types.User]:
         """Retrieves users that have been in, at least, one rated contest.
 

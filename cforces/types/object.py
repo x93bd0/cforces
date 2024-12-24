@@ -4,23 +4,29 @@ from typing import Dict, Any
 
 class Object(ABC):
     def __init__(self, **kwargs) -> None:
-        for k, v in kwargs.items():
-            if k not in self.__slots__:
-                raise KeyError(
-                    "Object '" + str(self.__class__) + "' has no key '" + k + "'"
-                )
+        slot: str
+        for slot in self.__slots__:
+            if slot in kwargs:
+                setattr(self, slot, kwargs.pop(slot))
 
-            setattr(self, k, v)
+            else:
+                setattr(self, slot, None)
+
+        for kwarg in kwargs:
+            raise KeyError(
+                "Object '" + str(self.__class__) + "' has no key '" + kwarg + "'"
+            )
 
     @staticmethod
     @abstractmethod
     def from_dict(raw_data: Dict[str, Any]) -> "Object":
-        return Object()
+        raise Exception()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         output: str = "cforces.types<" + self.__class__.__name__ + ">"
         data: Dict[str, Any] = {}
 
+        slot: str
         for slot in self.__slots__:
             if hasattr(self, slot):
                 data[slot] = getattr(self, slot)

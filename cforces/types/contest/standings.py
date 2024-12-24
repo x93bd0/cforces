@@ -18,6 +18,7 @@ class Standings(Object):
     @staticmethod
     def from_dict(raw_data: Dict[str, Any]) -> "Standings":
         raw_data["contest"] = Contest.from_dict(raw_data["contest"])
+
         ranklist_rows: List[RanklistRow] = []
         problems: List[Problem] = []
 

@@ -1,18 +1,16 @@
+from typing import Dict, Any, Optional
+from urllib.parse import urljoin
+from hashlib import sha512
+import random
+import string
 import enum
-from idlelib.iomenu import errors
-from typing import Dict, Any
+import time
 
 from aiohttp import ClientSession
-from urllib.parse import urljoin
 
 from .methods import Methods
 from .utils import cc2sc
 from . import errors
-
-from hashlib import sha512
-import random
-import string
-import time
 
 
 class Client(Methods):
@@ -20,25 +18,16 @@ class Client(Methods):
     params: Dict[str, Any]
     session: ClientSession
 
-    api_key: str | None
-    api_secret: str | None
+    api_key: Optional[str]
+    api_secret: Optional[str]
     api_url: str = "https://codeforces.com/api/"
 
-    def __init__(self, session: ClientSession | None = None) -> None:
+    def __init__(self, session: ClientSession) -> None:
         self.params = {"lang": "en"}
         self.session = session
 
         self.api_key = None
         self.api_secret = None
-
-    async def __aenter__(self):
-        self.session = self.session or ClientSession()
-        await self.session.__aenter__()
-
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self.session.__aexit__(exc_type, exc_val, exc_tb)
 
     def auth(self, api_key: str, api_secret: str) -> None:
         self.api_key = api_key
@@ -46,9 +35,11 @@ class Client(Methods):
 
     @property
     def authorized(self) -> bool:
-        return not (self.api_key is None or self.api_secret is None)
+        return self.api_key is not None and self.api_secret is not None
 
-    async def api_call(self, method_name: str, params: Dict[str, Any]) -> Any:
+    async def api_call(
+        self, method_name: str, params: Dict[str, Any], convert_case: bool = True
+    ) -> Any:
         params.update(self.params)
 
         if self.authorized:
@@ -88,6 +79,6 @@ class Client(Methods):
             if raw_data["status"] == "FAILED":
                 raise errors.api_error(raw_data["comment"])
 
-        if isinstance(raw_data["result"], dict | list):
+        if convert_case and (isinstance(raw_data["result"], (dict, list))):
             return cc2sc(raw_data["result"])
         return raw_data["result"]

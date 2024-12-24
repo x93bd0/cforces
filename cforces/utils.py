@@ -4,6 +4,32 @@ T = TypeVar("T")
 R = TypeVar("R", Dict[str, Any], List[Any])
 
 
+def cc2sc_key(key: str) -> str:
+    new_key: str = ""
+    for c in key:
+        if c.isupper():
+            new_key += "_"
+            c = c.lower()
+        new_key += c
+    return new_key
+
+
+def sc2cc_key(key: str) -> str:
+    new_key: str = ""
+    u: bool = False
+
+    for c in key:
+        if c == "_":
+            u = True
+        else:
+            if u:
+                c = c.upper()
+                u = False
+            new_key += c
+
+    return new_key
+
+
 def cc2sc(input_dict: R) -> R:
     if isinstance(input_dict, dict):
         output: Dict[str, Any] = {}
@@ -16,7 +42,7 @@ def cc2sc(input_dict: R) -> R:
 
                 parsed_key += e
 
-            if isinstance(input_dict[key], dict | list):
+            if isinstance(input_dict[key], (dict, list)):
                 output[parsed_key] = cc2sc(input_dict[key])
             else:
                 output[parsed_key] = input_dict[key]
@@ -24,7 +50,7 @@ def cc2sc(input_dict: R) -> R:
 
     output: List[Any] = []
     for e in input_dict:
-        if isinstance(e, dict | list):
+        if isinstance(e, (dict, list)):
             output.append(cc2sc(e))
 
         else:

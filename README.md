@@ -81,6 +81,7 @@ if __name__ == "__main__":
 - [ ] Add tests.
 - [ ] Fix bug: When a ';' is returned in the error comments, it is treated as a whole new error.
 - [ ] Better cc2sc
+- [ ] Fetch data from a running contest for tests.
 
 ## License
 

@@ -1,8 +1,7 @@
-from idlelib.pyshell import idle_showwarning
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
+from datetime import datetime
 
 from ..object import Object
-from datetime import datetime
 
 
 class BlogEntry(Object):
@@ -27,7 +26,7 @@ class BlogEntry(Object):
     creation_time_seconds: int
     author_handle: str
     title: str
-    content: str | None
+    content: Optional[str]
     locale: str
     modification_time_seconds: int
     allow_view_history: bool

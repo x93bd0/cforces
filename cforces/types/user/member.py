@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from ..object import Object
 
@@ -9,7 +9,7 @@ class Member(Object):
     __slots__ = ("handle", "name")
 
     handle: str
-    name: str | None
+    name: Optional[str]
 
     @staticmethod
     def from_dict(raw_data: Dict[str, Any]) -> "Member":

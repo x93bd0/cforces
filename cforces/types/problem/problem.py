@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from ..object import Object
 from ...enums import ProblemType
@@ -18,13 +18,13 @@ class Problem(Object):
         "tags",
     )
 
-    contest_id: int | None
-    problemset_name: str | None
+    contest_id: Optional[int]
+    problemset_name: Optional[str]
     index: str
     name: str
     type: ProblemType
-    points: float | None
-    rating: int | None
+    points: Optional[float]
+    rating: Optional[int]
     tags: List[str]
 
     @staticmethod

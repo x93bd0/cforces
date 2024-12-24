@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional, Union
 
 import cforces
 from cforces import types, utils
@@ -7,8 +7,8 @@ from cforces import types, utils
 class ProblemSet:
     async def problemset_problems(
         self: "cforces.Client",
-        tags: List[str] | str | None = None,
-        problemset_name: str | None = None,
+        tags: Optional[Union[List[str], str]] = None,
+        problemset_name: Optional[str] = None,
     ) -> Tuple[List[types.Problem], List[types.ProblemStatistics]]:
         """Retrieves problems (and their statistics) from a problemset.
 
@@ -16,13 +16,13 @@ class ProblemSet:
         :param problemset_name: Short name of the problemset the problem belongs to.
         :return: A tuple of Problem's and ProblemStatistics's
         """
-        raw_tags: str | None = None
+        raw_tags: Optional[str] = None
         if tags:
             if isinstance(tags, str):
                 raw_tags = tags
 
             else:
-                raw_tags = ';'.join(tags)
+                raw_tags = ";".join(tags)
 
         raw_problems: Dict[str, List[Dict[str, Any]]] = await self.api_call(
             "problemset.problems",
@@ -36,7 +36,7 @@ class ProblemSet:
         )
 
     async def problemset_recent_status(
-        self: "cforces.Client", count: int = 10, problemset_name: str | None = None
+        self: "cforces.Client", count: int = 10, problemset_name: Optional[str] = None
     ) -> List[types.Submission]:
         """Retrieves recent submissions from a problemset.
 

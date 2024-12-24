@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from ..object import Object
 
@@ -8,7 +8,7 @@ class ProblemStatistics(Object):
 
     __slots__ = ("contest_id", "index", "solved_count")
 
-    contest_id: int | None
+    contest_id: Optional[int]
     index: str
     solved_count: int
 

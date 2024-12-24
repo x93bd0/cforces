@@ -1,8 +1,8 @@
-from typing import Dict, Any
+from datetime import datetime
+from typing import Dict, Any, Optional
 
 from ..object import Object
 from ...enums import ProblemResultType
-from datetime import datetime
 
 
 class ProblemResult(Object):
@@ -17,14 +17,14 @@ class ProblemResult(Object):
     )
 
     points: float
-    penalty: int | None
+    penalty: Optional[int]
     rejected_attempt_count: int
     type: ProblemResultType
-    best_submission_time_seconds: int | None
+    best_submission_time_seconds: Optional[int]
 
     @property
     def best_submission_time(self) -> datetime:
-        return datetime.fromtimestamp(self.best_submission_time_seconds)
+        return datetime.fromtimestamp(float(self.best_submission_time_seconds))
 
     @staticmethod
     def from_dict(raw_data: Dict[str, Any]) -> "ProblemResult":

@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Optional, Union
 
 import cforces
 from cforces import types, utils, enums
@@ -6,7 +6,7 @@ from cforces import types, utils, enums
 
 class Contest:
     async def contest_hacks(
-        self: "cforces.Client", contest_id: int, as_manager: bool | None = None
+        self: "cforces.Client", contest_id: int, as_manager: Optional[bool] = None
     ) -> List[types.Hack]:
         """Fetches hacks created during a contest.
 
@@ -32,7 +32,7 @@ class Contest:
         )
 
     async def contest_list(
-        self: "cforces.Client", gym: bool | None = None
+        self: "cforces.Client", gym: Optional[bool] = None
     ) -> List[types.Contest]:
         """Retrieves the list of upcoming/finished contests.
 
@@ -65,12 +65,12 @@ class Contest:
         self: "cforces.Client",
         contest_id: int,
         as_manager: bool = False,
-        _from: int = 1,
-        count: int = 5,
-        handles: List[str] | str | None = None,
-        room: int | None = None,
+        _from: Optional[int] = None,
+        count: Optional[int] = None,
+        handles: Optional[Union[List[str], str]] = None,
+        room: Optional[int] = None,
         show_unofficial: bool = False,
-        participant_types: List[enums.ParticipantType | str] | None = None,
+        participant_types: Optional[List[Union[enums.ParticipantType, str]]] = None,
     ) -> types.Standings:
         """Retrieves standings of a specific contest.
 
@@ -99,7 +99,7 @@ class Contest:
             participants with the specified types will be returned.
         :return: A list of standings of the requested contest.
         """
-        raw_handles: str | None = None
+        raw_handles: Optional[str] = None
         if handles:
             if isinstance(handles, str):
                 raw_handles = handles
@@ -140,9 +140,9 @@ class Contest:
         self: "cforces.Client",
         contest_id: int,
         as_manager: bool = False,
-        handle: str | None = None,
-        _from: int = 1,
-        count: int = 10,
+        handle: Optional[str] = None,
+        _from: Optional[int] = None,
+        count: Optional[int] = None,
     ) -> List[types.Submission]:
         """Retrieves submissions for a specific contest.
 

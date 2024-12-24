@@ -1,9 +1,9 @@
-from typing import Dict, Any
+from datetime import datetime
+from typing import Dict, Any, Optional
 
 from .blog_entry import BlogEntry
 from .comment import Comment
 from ..object import Object
-from datetime import datetime
 
 
 class RecentAction(Object):
@@ -13,7 +13,7 @@ class RecentAction(Object):
 
     time_seconds: int
     blog_entry: BlogEntry
-    comment: Comment | None
+    comment: Optional[Comment]
 
     @property
     def time(self) -> datetime:

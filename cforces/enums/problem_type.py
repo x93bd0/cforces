@@ -3,6 +3,6 @@ from enum import Enum
 
 class ProblemType(Enum):
     #: Undocumented (TODO)
-    PROGRAMMING: str = "PROGRAMMING"
+    PROGRAMMING = "PROGRAMMING"
     #: Undocumented (TODO)
-    QUESTION: str = "QUESTION"
+    QUESTION = "QUESTION"
