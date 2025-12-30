@@ -12,6 +12,7 @@ class Party(Object):
     __slots__ = (
         "contest_id",
         "members",
+        "participant_id",  # FIXME: Undocumented in the API, but used.
         "participant_type",
         "team_id",
         "team_name",
@@ -22,6 +23,7 @@ class Party(Object):
 
     contest_id: Optional[int]
     members: List[Member]
+    participant_id: Optional[int]  # FIXME: May not be correct.
     participant_type: ParticipantType
     team_id: Optional[int]
     team_name: Optional[str]
